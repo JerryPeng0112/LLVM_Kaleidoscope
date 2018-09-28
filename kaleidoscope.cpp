@@ -1,13 +1,4 @@
 #include "parser.h"
-#include "llvm/ADT/STLExtras.h"
-#include <algorithm>
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <map>
-#include <memory>
-#include <string>
-#include <vector>
 
 int main() {
      bin_op_precedence['<'] = 10; 
