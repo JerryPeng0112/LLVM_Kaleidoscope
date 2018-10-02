@@ -1,6 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include "global.h"
 #include "lexer.h"
 #include "AST.h"
 #include "utils.h"
@@ -28,8 +29,9 @@
     The second production for function calls
 */
 
-int get_next_tok();
+std::unique_ptr<ExprAST> log_error_e(const char *str);
 std::unique_ptr<PrototypeAST> log_error_p(const char *str);
+int get_next_tok();
 std::unique_ptr<ExprAST> parse_number_expr();
 std::unique_ptr<ExprAST> parse_paren_expr();
 std::unique_ptr<ExprAST> parse_identifier_expr();
@@ -48,8 +50,5 @@ void handle_top_level_expression();
 
 // token buffer
 static int cur_tok;
-
-// bin_op_precedence - This holds the precedence for each binary operator that is defined.
-static std::map<char, int> bin_op_precedence;
 
 #endif

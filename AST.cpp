@@ -1,10 +1,22 @@
-#include "codegen.h"
+#include "AST.h"
+
+// LLVM context global variables
+LLVMContext context;
+IRBuilder<> Builder(context);
+std::unique_ptr<Module> module;
+std::map<std::string, Value *> named_values;
 
 Value* log_error_v(const char *str) {
     log_error(str);
     return nullptr;
 }
 
+Function* log_error_f(const char*str) {
+    log_error(str);
+    return nullptr;
+}
+
+/* LLVM IR Code Generation */
 Value* NumberExprAST::codegen() {
     return ConstantFP::get(context, APFloat(val));
 }
@@ -87,7 +99,7 @@ Function* FunctionAST::codegen() {
         return nullptr;
     }
     if (!func->empty()) {
-        return (Function*)log_error_v("Function cannot be redefined.");
+        return log_error_f("Function cannot be redefined.");
     }
 
     // Create a new basic block to start insertion into

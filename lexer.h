@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 
+#include "global.h"
+
 enum Token {
     tok_eof = -1,
 
@@ -21,9 +23,6 @@ enum Token {
     tok_identifier = -4,
     tok_number = -5,
 };
-
-static std::string identifier_str;
-static double num_val;
 
 int gettok();
 

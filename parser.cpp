@@ -1,14 +1,18 @@
 #include "parser.h"
 
-// cur_tok/get_next_tok() - provide a simple token buffer
-int get_next_tok() {
-    return cur_tok = gettok();
+std::unique_ptr<ExprAST> log_error_e(const char *str) {
+    log_error(str);
+    return nullptr;
 }
-
 
 std::unique_ptr<PrototypeAST> log_error_p(const char *str) {
     log_error(str);
     return nullptr;
+}
+
+// cur_tok/get_next_tok() - provide a simple token buffer
+int get_next_tok() {
+    return cur_tok = gettok();
 }
 
 // NumberExpr ::= number
@@ -26,7 +30,7 @@ std::unique_ptr<ExprAST> parse_paren_expr() {
     if (!V)
         return nullptr;
     if (cur_tok != ')')
-        return log_error("expected ')'");
+        return log_error_e("expected ')'");
     //eat ')'
     get_next_tok();
     return V;
@@ -62,7 +66,7 @@ std::unique_ptr<ExprAST> parse_identifier_expr() {
             }
 
             if (cur_tok != ',')
-                return log_error("Expected ')' or ',' in argument list");
+                return log_error_e("Expected ')' or ',' in argument list");
             get_next_tok();
         }
     }
@@ -78,7 +82,7 @@ std::unique_ptr<ExprAST> parse_identifier_expr() {
 std::unique_ptr<ExprAST> parse_primary() {
     switch (cur_tok) {
     default:
-        return log_error("unknow token when expecting an expression");
+        return log_error_e("unknown token when expecting an expression");
     case tok_identifier:
         return parse_identifier_expr();
     case tok_number:
@@ -223,8 +227,12 @@ void main_loop() {
 }
 
 void handle_definition() {
-    if (parse_definition()) {
-        fprintf(stderr, "Parsed a function definition.\n");
+    if (auto fn_AST = parse_definition()) {
+        if (auto *fn_IR = fn_AST->codegen()) {
+            fprintf(stderr, "Parsed a function definition.");
+            fn_IR->print(errs());
+            fprintf(stderr, "\n");
+        }
     } else {
         // Skip token for error recovery
         get_next_tok();
@@ -232,8 +240,12 @@ void handle_definition() {
 }
 
 void handle_extern() {
-    if (parse_extern()) {
-        fprintf(stderr, "Parsed an extern\n");
+    if (auto proto_AST = parse_extern()) {
+        if (auto *fn_IR = proto_AST->codegen()) {
+            fprintf(stderr, "Parsed an extern");
+            fn_IR->print(errs());
+            fprintf(stderr, "\n");
+        }
     } else {
         // Skip token for error recovery
         get_next_tok();
@@ -242,8 +254,12 @@ void handle_extern() {
 
 void handle_top_level_expression() {
     // Evaluate a top-level expression into an anonymous function
-    if (parse_top_level_expr()) {
-        fprintf(stderr, "Parsed a top-level expr\n");
+    if (auto fn_AST = parse_top_level_expr()) {
+        if (auto *fn_IR = fn_AST->codegen()) { 
+            fprintf(stderr, "Parsed a top-level expr");
+            fn_IR->print(errs());
+            fprintf(stderr, "\n");
+        }
     } else {
         // Skip token for error recovery.
         get_next_tok();

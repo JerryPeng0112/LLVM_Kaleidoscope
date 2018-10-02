@@ -1,5 +1,9 @@
 #include "lexer.h"
 
+// lexer variables
+std::string identifier_str;
+double num_val;
+
 // gettok - Return the next token from standard input (lexer)
 int gettok() {
     static int last_char = ' ';

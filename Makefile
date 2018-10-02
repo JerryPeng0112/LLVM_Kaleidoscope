@@ -1,7 +1,11 @@
-src = $(wildcard *.cpp)
+TARGET_EXEC = kaleidoscope
 
-llvm_flags = `llvm-config --cxxflags --ldflags --system-libs --libs core`
-all: $(src)
-	clang++ *.cpp `llvm-config --cxxflags --ldflags --system-libs --libs core` -o kaleidoscope
+CC = clang++
+SRC = $(wildcard *.cpp)
+LLVM_FLAGS = `llvm-config --cxxflags --ldflags --system-libs --libs core`
+
+all: $(SRC)
+	$(CC) $(LLVM_FLAGS) -o $(TARGET_EXEC) $^
+
 clean:
-	rm -fr ./kaleidoscope.dSYM/ ./kaleidoscope
+	rm -fr $(TARGET_EXEC)
