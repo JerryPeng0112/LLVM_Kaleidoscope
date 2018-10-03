@@ -91,7 +91,7 @@ Function* PrototypeAST::codegen() {
 Function* FunctionAST::codegen() {
     // First, check for an existing function from a previous 'extern' declaration
     Function* func = module->getFunction(proto->get_name());
-    
+
     if (!func) {
         func = proto->codegen();
     }
@@ -100,6 +100,19 @@ Function* FunctionAST::codegen() {
     }
     if (!func->empty()) {
         return log_error_f("Function cannot be redefined.");
+    }
+    
+    // If the argument size is different, output error.
+    std::vector<std::string> args = this->proto->get_args();
+
+    if (args.size() != func->arg_size()) {
+        return log_error_f("Function arguments size does not match.");
+    }
+
+    // Reset names for all arguments
+    unsigned idx = 0;
+    for (auto &arg : func->args()) {
+        arg.setName(args[idx++]);
     }
 
     // Create a new basic block to start insertion into

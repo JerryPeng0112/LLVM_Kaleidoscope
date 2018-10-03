@@ -61,6 +61,7 @@ class PrototypeAST {
         PrototypeAST(const std::string &name, std::vector<std::string> args)
             : name(name), args(std::move(args)) {}
         const std::string &get_name() const { return name; }
+        const std::vector<std::string> &get_args() const { return args; }
         Function* codegen();
 };
 
@@ -77,5 +78,5 @@ class FunctionAST {
 
 Value* log_error_v(const char *str);
 Function* log_error_f(const char *str);
- 
+
 #endif
