@@ -229,7 +229,7 @@ void main_loop() {
 void handle_definition() {
     if (auto fn_AST = parse_definition()) {
         if (auto *fn_IR = fn_AST->codegen()) {
-            fprintf(stderr, "Parsed a function definition.");
+            fprintf(stderr, "Read function definition.");
             fn_IR->print(errs());
             fprintf(stderr, "\n");
         }
@@ -242,7 +242,7 @@ void handle_definition() {
 void handle_extern() {
     if (auto proto_AST = parse_extern()) {
         if (auto *fn_IR = proto_AST->codegen()) {
-            fprintf(stderr, "Parsed an extern");
+            fprintf(stderr, "Read extern");
             fn_IR->print(errs());
             fprintf(stderr, "\n");
         }
@@ -256,7 +256,7 @@ void handle_top_level_expression() {
     // Evaluate a top-level expression into an anonymous function
     if (auto fn_AST = parse_top_level_expr()) {
         if (auto *fn_IR = fn_AST->codegen()) { 
-            fprintf(stderr, "Parsed a top-level expr");
+            fprintf(stderr, "Read top-level expression");
             fn_IR->print(errs());
             fprintf(stderr, "\n");
         }
